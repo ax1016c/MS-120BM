@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Casio MS-120BM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #16213e;
+    background-image:
+      radial-gradient(ellipse at 30% 20%, rgba(52,73,94,0.4) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 80%, rgba(44,62,80,0.3) 0%, transparent 60%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 20px;
+    user-select: none;
+  }
+
+  .calculator {
+    width: 340px;
+    background: linear-gradient(170deg, #d8d4cc 0%, #ccc8c0 40%, #c0bcb4 100%);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow:
+      0 30px 80px rgba(0,0,0,0.6),
+      0 4px 8px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+
+  /* === Header === */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 14px 16px 4px;
+  }
+  .brand {
+    font-weight: 800;
+    font-size: 17px;
+    color: #1a1a1a;
+    letter-spacing: 4px;
+  }
+  .model-info { text-align: right; line-height: 1.2; }
+  .model-name { font-weight: 700; font-size: 11px; color: #333; letter-spacing: 1px; }
+  .model-digits { font-weight: 800; font-size: 16px; color: #333; }
+  .model-digits small { font-size: 7px; font-weight: 600; vertical-align: top; letter-spacing: 1px; }
+
+  /* === Solar panel === */
+  .solar {
+    margin: 2px 16px 6px;
+    height: 16px;
+    background: linear-gradient(180deg, #0d0d2b, #1a1a3e, #0d0d2b);
+    border-radius: 2px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+    position: relative;
+  }
+  .solar::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(90deg, transparent 0 7px, rgba(255,255,255,0.04) 7px 8px);
+  }
+
+  /* === Display === */
+  .display-wrap {
+    margin: 4px 12px 8px;
+    background: linear-gradient(180deg, #a8b898, #bccaac, #c8d8bc);
+    border-radius: 4px;
+    padding: 6px 10px 8px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.12), inset 0 -1px 0 rgba(255,255,255,0.4);
+  }
+  .indicators {
+    display: flex;
+    gap: 8px;
+    font-size: 8.5px;
+    font-weight: 700;
+    color: #4a5a3a;
+    height: 13px;
+    align-items: center;
+    padding: 0 2px;
+    letter-spacing: 0.3px;
+  }
+  .indicators span { opacity: 0; transition: opacity 0.12s; }
+  .indicators span.on { opacity: 1; }
+  .indicators .spacer { flex: 1; }
+
+  #display {
+    font-family: 'Orbitron', monospace;
+    font-size: 34px;
+    font-weight: 700;
+    color: #0f1f08;
+    text-align: right;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.15);
+    letter-spacing: 2px;
+    line-height: 1;
+    overflow: hidden;
+  }
+
+  /* === Buttons === */
+  .keys {
+    padding: 4px 8px 12px;
+  }
+
+  .row {
+    display: grid;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  .row:last-child { margin-bottom: 0; }
+  .r5 { grid-template-columns: repeat(5, 1fr); }
+
+  button {
+    border: none;
+    border-radius: 3px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    position: relative;
+    transition: transform 0.06s, box-shadow 0.06s;
+  }
+  button:active {
+    transform: translateY(2px) !important;
+    box-shadow: 0 0 0 rgba(0,0,0,0.3) !important;
+    filter: brightness(0.85);
+  }
+
+  .func {
+    height: 36px;
+    background: linear-gradient(180deg, #6b6b6b, #5a5a5a);
+    color: #dcc050;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 1px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+
+  .tax {
+    height: 36px;
+    background: linear-gradient(180deg, #1a9090, #148080);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: 0 2px 1px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+
+  .gray {
+    height: 44px;
+    background: linear-gradient(180deg, #555, #444);
+    color: #fff;
+    font-size: 15px;
+    box-shadow: 0 3px 1px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.12);
+  }
+
+  .dark {
+    height: 44px;
+    background: linear-gradient(180deg, #2a2a2a, #1e1e1e);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 600;
+    box-shadow: 0 3px 1px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  .op {
+    height: 44px;
+    background: linear-gradient(180deg, #505050, #404040);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 400;
+    box-shadow: 0 3px 1px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+
+  .orange {
+    height: 44px;
+    background: linear-gradient(180deg, #e85530, #d04020);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    box-shadow: 0 3px 1px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.25);
+  }
+
+  /* Plus and minus combined grid */
+  .grid-main {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) minmax(0, 1fr);
+    grid-template-rows: 44px 44px 44px;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  .grid-main .plus-btn {
+    grid-column: 5;
+    grid-row: 1 / 3;
+    height: auto;
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+    color: #fff;
+    box-shadow: 0 3px 1px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  .grid-main .minus-btn {
+    grid-column: 5;
+    grid-row: 3;
+    font-size: 20px;
+  }
+
+  /* Labels */
+  .lbl { position: relative; }
+  .lbl::before {
+    position: absolute;
+    top: -12px;
+    left: 1px;
+    font-size: 7.5px;
+    color: #666;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .lbl-rate::before { content: 'RATE SET'; }
+  .lbl-on::before { content: 'ON'; font-size: 8px; }
+
+  .tax-lbl {
+    position: relative;
+  }
+  .tax-label-text {
+    position: absolute;
+    top: -13px;
+    right: 0;
+    font-size: 7.5px;
+    color: #555;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* Bottom row */
+  .row-bottom {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+
+  /* Error flash */
+  @keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .error { animation: flash 0.5s 3; }
+
+  /* Toast for tax rate set */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: transform 0.3s ease;
+    z-index: 100;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 380px) {
+    .calculator { width: 300px; }
+    #display { font-size: 28px; }
+    .func, .tax { height: 32px; }
+    .gray, .dark, .op, .orange { height: 38px; }
+    .grid-main { grid-template-rows: 38px 38px 38px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="calculator">
+  <div class="header">
+    <div class="brand">CASIO</div>
+    <div class="model-info">
+      <div class="model-name">MS-120BM</div>
+      <div class="model-digits">12 <small>DIGITS</small></div>
+    </div>
+  </div>
+
+  <div class="solar"></div>
+
+  <div class="display-wrap">
+    <div class="indicators">
+      <span id="ind-m">M</span>
+      <span id="ind-neg">−</span>
+      <span class="spacer"></span>
+      <span id="ind-cost">COST</span>
+      <span id="ind-sell">SELL</span>
+      <span id="ind-mar">MAR</span>
+      <span id="ind-op"></span>
+      <span id="ind-tax">TAX</span>
+    </div>
+    <div id="display">0</div>
+  </div>
+
+  <div class="keys">
+    <!-- Row 1: COST SELL MAR TAX- TAX+ -->
+    <div class="row r5" style="margin-bottom:14px; position:relative;">
+      <div class="tax-lbl" style="display:contents;">
+        <span class="tax-label-text">TAX RATE</span>
+      </div>
+      <button class="func" data-key="cost">COST</button>
+      <button class="func" data-key="sell">SELL</button>
+      <button class="func" data-key="mar">MAR</button>
+      <button class="tax" data-key="taxm">TAX−</button>
+      <button class="tax" data-key="taxp">TAX+</button>
+    </div>
+
+    <!-- Row 2: % MRC M- M+ ÷ -->
+    <div class="row r5">
+      <button class="gray lbl lbl-rate" data-key="%">%</button>
+      <button class="gray" data-key="mrc">MRC</button>
+      <button class="gray" data-key="mm">M−</button>
+      <button class="gray" data-key="mp">M+</button>
+      <button class="op" data-key="div">÷</button>
+    </div>
+
+    <!-- Row 3: +/- 7 8 9 × -->
+    <div class="row r5">
+      <button class="gray" data-key="sign">+/−</button>
+      <button class="dark" data-key="7">7</button>
+      <button class="dark" data-key="8">8</button>
+      <button class="dark" data-key="9">9</button>
+      <button class="op" data-key="mul">×</button>
+    </div>
+
+    <!-- Main grid: C 4 5 6 [+] / AC 1 2 3 [+] / _ _ _ _ [-] -->
+    <div class="grid-main">
+      <button class="orange" data-key="c">C</button>
+      <button class="dark" data-key="4">4</button>
+      <button class="dark" data-key="5">5</button>
+      <button class="dark" data-key="6">6</button>
+      <button class="plus-btn" data-key="add">+</button>
+
+      <button class="orange lbl lbl-on" data-key="ac">AC</button>
+      <button class="dark" data-key="1">1</button>
+      <button class="dark" data-key="2">2</button>
+      <button class="dark" data-key="3">3</button>
+      <!-- plus spans rows 1-2 -->
+
+      <div></div><div></div><div></div><div></div>
+      <button class="op minus-btn" data-key="sub">−</button>
+    </div>
+
+    <!-- Bottom: 0 00 . = -->
+    <div class="row-bottom">
+      <button class="dark" data-key="0">0</button>
+      <button class="dark" data-key="00">00</button>
+      <button class="dark" data-key=".">.</button>
+      <button class="dark" data-key="eq">=</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  // === State ===
+  let disp = '0';       // Current display string
+  let acc = 0;          // Accumulator
+  let op = null;        // Pending operator
+  let fresh = true;     // Next digit replaces display
+  let mem = 0;          // Memory
+  let taxRate = 16;     // Default IVA México
+  let settingTax = false;
+  let lastEq = null;    // For constant function {op, val}
+  let mrcCount = 0;     // MRC press tracking
+  let csm = {};         // Cost/Sell/Margin stored values
+
+  // DOM
+  const $ = (s) => document.getElementById(s);
+  const dispEl = $('display');
+  const indM = $('ind-m');
+  const indNeg = $('ind-neg');
+  const indCost = $('ind-cost');
+  const indSell = $('ind-sell');
+  const indMar = $('ind-mar');
+  const indOp = $('ind-op');
+  const indTax = $('ind-tax');
+
+  // === Helpers ===
+  function val() { return parseFloat(disp) || 0; }
+
+  function fmt(s) {
+    let neg = s.startsWith('-');
+    s = s.replace(/^-/, '');
+    let parts = s.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return (neg ? '-' : '') + parts.join('.');
+  }
+
+  function numToStr(n) {
+    if (!isFinite(n)) return 'E';
+    if (n === 0) return '0';
+    // Limit to 12 significant digits
+    let s = parseFloat(n.toPrecision(12)).toString();
+    // Ensure integer part doesn't exceed 12 digits
+    let intLen = s.replace('-','').split('.')[0].length;
+    if (intLen > 12) return 'E';
+    // Truncate decimal to fit 12 total digits
+    let digits = s.replace(/[-.]/, '').replace(/^0+/, '').length;
+    if (digits > 12 && s.includes('.')) {
+      let [ip, dp] = s.split('.');
+      let allow = Math.max(0, 12 - ip.replace('-','').length);
+      n = parseFloat(n.toFixed(allow));
+      s = n.toString();
+    }
+    return s;
+  }
+
+  function render() {
+    dispEl.textContent = fmt(disp);
+    indM.classList.toggle('on', mem !== 0);
+    indNeg.classList.toggle('on', val() < 0);
+  }
+
+  function setDisp(n) {
+    disp = numToStr(n);
+    if (disp === 'E') {
+      dispEl.classList.add('error');
+      setTimeout(() => dispEl.classList.remove('error'), 1500);
+    }
+    render();
+  }
+
+  function clrInd() {
+    indCost.classList.remove('on');
+    indSell.classList.remove('on');
+    indMar.classList.remove('on');
+    indTax.classList.remove('on');
+  }
+
+  function setOpInd(o) {
+    indOp.textContent = o || '';
+    indOp.classList.toggle('on', !!o);
+  }
+
+  function compute(a, operator, b) {
+    switch (operator) {
+      case '+': return a + b;
+      case '−': return a - b;
+      case '×': return a * b;
+      case '÷': return b === 0 ? Infinity : a / b;
+    }
+    return b;
+  }
+
+  function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  // === Actions ===
+  const actions = {
+    // Digits
+    '0': () => digit('0'),
+    '1': () => digit('1'),
+    '2': () => digit('2'),
+    '3': () => digit('3'),
+    '4': () => digit('4'),
+    '5': () => digit('5'),
+    '6': () => digit('6'),
+    '7': () => digit('7'),
+    '8': () => digit('8'),
+    '9': () => digit('9'),
+    '00': () => { digit('0'); digit('0'); },
+    '.': () => {
+      if (fresh) { disp = '0.'; fresh = false; }
+      else if (!disp.includes('.')) disp += '.';
+      render();
+    },
+
+    // Operators
+    add: () => doOp('+'),
+    sub: () => doOp('−'),
+    mul: () => doOp('×'),
+    div: () => doOp('÷'),
+
+    // Equals
+    eq: () => {
+      let v = val();
+      if (lastEq && fresh) {
+        let r = compute(val(), lastEq.op, lastEq.val);
+        setDisp(r); acc = r;
+      } else if (op) {
+        let r = compute(acc, op, v);
+        lastEq = { op, val: v };
+        setDisp(r); acc = r; op = null;
+      }
+      fresh = true;
+      setOpInd(null);
+      clrInd();
+    },
+
+    // Clear
+    c: () => { disp = '0'; fresh = true; clrInd(); render(); },
+    ac: () => {
+      disp = '0'; acc = 0; op = null; fresh = true;
+      lastEq = null; settingTax = false; csm = {};
+      clrInd(); setOpInd(null); render();
+    },
+
+    // Sign
+    sign: () => {
+      if (val() !== 0) {
+        disp = disp.startsWith('-') ? disp.slice(1) : '-' + disp;
+        render();
+      }
+    },
+
+    // Percent
+    '%': () => {
+      // Normal percent (not long-press tax set)
+      let v = val();
+      if (op === '+' || op === '−') {
+        setDisp(acc * v / 100);
+      } else {
+        setDisp(v / 100);
+      }
+      fresh = true;
+    },
+
+    // Memory
+    mp: () => { mem += val(); fresh = true; render(); },
+    mm: () => { mem -= val(); fresh = true; render(); },
+    mrc: () => {
+      mrcCount++;
+      if (mrcCount >= 2) { mem = 0; mrcCount = 0; }
+      else { setDisp(mem); }
+      fresh = true;
+      render();
+      setTimeout(() => { mrcCount = 0; }, 1200);
+    },
+
+    // Tax
+    taxp: () => {
+      if (settingTax) {
+        taxRate = val();
+        settingTax = false;
+        toast(`Tasa de impuesto: ${taxRate}%`);
+        clrInd();
+        fresh = true;
+        render();
+        return;
+      }
+      if (disp === '0' && fresh) {
+        setDisp(taxRate);
+        indTax.classList.add('on');
+        fresh = true;
+        return;
+      }
+      let v = val();
+      setDisp(v * (1 + taxRate / 100));
+      clrInd(); indTax.classList.add('on');
+      fresh = true;
+    },
+    taxm: () => {
+      if (settingTax) {
+        taxRate = val();
+        settingTax = false;
+        toast(`Tasa de impuesto: ${taxRate}%`);
+        clrInd();
+        fresh = true;
+        render();
+        return;
+      }
+      if (disp === '0' && fresh) {
+        setDisp(taxRate);
+        indTax.classList.add('on');
+        fresh = true;
+        return;
+      }
+      let v = val();
+      setDisp(v / (1 + taxRate / 100));
+      clrInd(); indTax.classList.add('on');
+      fresh = true;
+    },
+
+    // Cost/Sell/Margin
+    cost: () => {
+      let v = val();
+      if (csm.sell != null && csm.margin != null) {
+        let r = csm.sell * (1 - csm.margin / 100);
+        setDisp(r);
+        clrInd(); indCost.classList.add('on');
+        csm = {};
+      } else {
+        csm.cost = v;
+        clrInd(); indCost.classList.add('on');
+      }
+      fresh = true;
+    },
+    sell: () => {
+      let v = val();
+      if (csm.cost != null && csm.margin != null) {
+        let denom = 1 - csm.margin / 100;
+        let r = denom === 0 ? Infinity : csm.cost / denom;
+        setDisp(r);
+        clrInd(); indSell.classList.add('on');
+        csm = {};
+      } else {
+        csm.sell = v;
+        clrInd(); indSell.classList.add('on');
+      }
+      fresh = true;
+    },
+    mar: () => {
+      let v = val();
+      if (csm.cost != null && csm.sell != null) {
+        let r = csm.sell === 0 ? 0 : (csm.sell - csm.cost) / csm.sell * 100;
+        setDisp(r);
+        clrInd(); indMar.classList.add('on');
+        csm = {};
+      } else {
+        csm.margin = v;
+        clrInd(); indMar.classList.add('on');
+      }
+      fresh = true;
+    },
+  };
+
+  function digit(d) {
+    settingTax = false;
+    if (fresh) { disp = d; fresh = false; }
+    else {
+      let digits = disp.replace(/[-.]/, '').length;
+      if (digits >= 12) return;
+      if (disp === '0') disp = d === '0' ? '0' : d;
+      else disp += d;
+    }
+    clrInd();
+    render();
+  }
+
+  function doOp(operator) {
+    settingTax = false;
+    let v = val();
+    if (op && !fresh) {
+      let r = compute(acc, op, v);
+      setDisp(r); acc = r;
+    } else {
+      acc = v;
+    }
+    op = operator;
+    fresh = true;
+    lastEq = null;
+    setOpInd(operator);
+    clrInd();
+  }
+
+  // === Event binding ===
+  document.querySelectorAll('button[data-key]').forEach(btn => {
+    const key = btn.dataset.key;
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (actions[key]) actions[key]();
+    });
+  });
+
+  // Long press on % for tax rate setting
+  const pctBtn = document.querySelector('[data-key="%"]');
+  let pressTimer = null;
+  let longFired = false;
+
+  pctBtn.addEventListener('pointerdown', () => {
+    longFired = false;
+    pressTimer = setTimeout(() => {
+      longFired = true;
+      settingTax = true;
+      disp = '0'; fresh = true;
+      clrInd();
+      indTax.classList.add('on');
+      render();
+      toast('Ingresa tasa y presiona TAX+ o TAX−');
+    }, 1500);
+  });
+  pctBtn.addEventListener('pointerup', () => {
+    clearTimeout(pressTimer);
+    if (!longFired) actions['%']();
+  });
+  pctBtn.addEventListener('pointerleave', () => clearTimeout(pressTimer));
+
+  // Override click for % to prevent double-fire
+  pctBtn.removeEventListener('click', pctBtn._handler);
+  pctBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); });
+
+  // Keyboard
+  document.addEventListener('keydown', (e) => {
+    const k = e.key;
+    if (k >= '0' && k <= '9') digit(k);
+    else if (k === '.') actions['.']();
+    else if (k === '+') doOp('+');
+    else if (k === '-') doOp('−');
+    else if (k === '*') doOp('×');
+    else if (k === '/') { e.preventDefault(); doOp('÷'); }
+    else if (k === 'Enter' || k === '=') actions.eq();
+    else if (k === 'Escape') actions.ac();
+    else if (k === 'Backspace' || k === 'Delete') actions.c();
+    else if (k === '%') actions['%']();
+  });
+
+  // Initial render
+  render();
+})();
+</script>
+
+</body>
+</html>
